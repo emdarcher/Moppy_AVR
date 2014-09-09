@@ -1,0 +1,8 @@
+*.o
+*.hex
+*.elf
+*.ihex
+*.eep
+*.lst
+*.bin
+
