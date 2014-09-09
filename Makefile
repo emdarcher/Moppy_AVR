@@ -16,13 +16,13 @@ MAIN = main.c
 ## include the additional .c source (in same directory) here 
 ## (and include the .h files in your foo.c)
 #LOCAL_SOURCE = USART.c
-LOCAL_SOURCE = ht1632c.c
+#LOCAL_SOURCE = ht1632c.c
 
 ## Here you can link to one more directory (and multiple .c files)
 # EXTRA_SOURCE_DIR = ../AVR-Programming-Library/
 # EXTRA_SOURCE_FILES = USART.c
-EXTRA_SOURCE_DIR = 
-EXTRA_SOURCE_FILES = 
+EXTRA_SOURCE_DIR = ./libs/
+EXTRA_SOURCE_FILES = USART.c
 
 ##########------------------------------------------------------##########
 ##########                 Programmer Defaults                  ##########

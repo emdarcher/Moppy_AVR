@@ -9,8 +9,8 @@
 #endif
 
                                   /* These are defined for convenience */
-#define   USART_HAS_DATA   bit_is_set(UCSR0A, RXC0)
-#define   USART_READY      bit_is_set(UCSR0A, UDRE0)
+#define   USART_HAS_DATA   bit_is_set(UCSRA, RXC)
+#define   USART_READY      bit_is_set(UCSRA, UDRE)
 
 /* Takes the defined BAUD and F_CPU,
    calculates the bit-clock multiplier,
