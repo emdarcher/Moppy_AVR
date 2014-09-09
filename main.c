@@ -2,8 +2,8 @@
 //to make music on floppy drives
 
 #include "main.h"
-#include "USART.h"
-
+//#include "USART.h"
+#include "usart.h"
 
 uint8_t flag_store = 0;
 #define FIRST_RUN_BIT 0 //bit of the first run flag
@@ -37,7 +37,7 @@ void main(void)
     
     
     //init the USART module and stuff
-    initUSART();
+    //initUSART();
     
     //infinite loop
     while(1){
