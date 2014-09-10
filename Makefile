@@ -22,7 +22,8 @@ MAIN = main.c
 # EXTRA_SOURCE_DIR = ../AVR-Programming-Library/
 # EXTRA_SOURCE_FILES = USART.c
 EXTRA_SOURCE_DIR = ./libs/
-EXTRA_SOURCE_FILES = USART.c
+#EXTRA_SOURCE_FILES = USART.c
+EXTRA_SOURCE_FILES = uart.c
 
 ##########------------------------------------------------------##########
 ##########                 Programmer Defaults                  ##########

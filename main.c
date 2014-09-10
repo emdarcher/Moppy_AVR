@@ -13,15 +13,25 @@ uint8_t flag_store = 0;
  80 tracks, 5.25" have 50.  These should be doubled, because each tick is now
  half a position (use 158 and 98).
  */
-const uint8_t MAX_POSITION[] PROGMEM = {
-  0,0,158,0,158,0,158,0,158,0,158,0,158,0,158,0,158,0};
+const uint8_t MAX_POSITION[8] = {
+  158,158,158,158,158,158,158,158};
   
 //Array to track the current position of each floppy head.  (Only even indexes (i.e. 2,4,6...) are used)
-uint8_t currentPosition[] = {
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+uint8_t currentPosition[8] = {
+  0,0,0,0,0,0,0,0};
   
+#define RESOLUTION_US 40
+
+//Current period assigned to each pin.  0 = off.  Each period is of the length specified by the RESOLUTION
+//variable above.  i.e. A period of 10 is (RESOLUTION x 10) microseconds long.
+unsigned int currentPeriod[8] = {
+  0,0,0,0,0,0,0,0,
+};
+
+
 //prototypes
 inline void tick(void);
+inline void setup_timer0_tick(uint8_t us_delay);
 void reset(void);
 void resetAll(void);
 
@@ -39,8 +49,34 @@ void main(void)
     //init the USART module and stuff
     //initUSART();
     
+    //setup timer0 tick
+    setup_timer0_tick(RESOLUTION_US);
+    
+    sei(); //enable global interrupts
     //infinite loop
     while(1){
     
     }
+}
+
+inline void setup_timer0_tick(uint8_t us_delay){
+    //configured for a 8MHz system clock divided by 8 for microsecond resolution
+    
+    TCCR0 |= ((1<<WGM01)|(1<<CS01)); //set to CTC mode, clk/8 divider.
+    OCR0 = us_delay; //sets the delay in microseconds for tick
+    TIMSK |= (1<<OCIE0); //sets the output compare interrupt enable bit in TIMSK
+    
+}
+
+inline void tick(void){
+    
+    
+    
+}
+
+//isr for timer0 compare match
+ISR(TIMER0_COMP_vect){
+    //call tick() function
+    tick();
+    
 }
