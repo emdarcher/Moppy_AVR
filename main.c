@@ -2,41 +2,40 @@
 //to make music on floppy drives
 
 #include "main.h"
-//#include "USART.h"
 
-
-//set these things int the Makefile
+//set these things in the Makefile if you need a bigger ring buffer size
 //#define UART_RX0_BUFFER_SIZE 4
 //#define UART_TX0_BUFFER_SIZE 4
-
 
 #include "uart.h"
 
 uint8_t flag_store = 0;
 #define FIRST_RUN_BIT 0 //bit of the first run flag
 
+#define NUM_DRIVES 8
+
 /*An array of maximum track positions for each step-control pin.  Even pins
  are used for control, so only even numbers need a value here.  3.5" Floppies have
  80 tracks, 5.25" have 50.  These should be doubled, because each tick is now
  half a position (use 158 and 98).
  */
-const uint8_t MAX_POSITION[8] = {
+const uint8_t MAX_POSITION[NUM_DRIVES] = {
   158,158,158,158,158,158,158,158};
   
 //Array to track the current position of each floppy head.  (Only even indexes (i.e. 2,4,6...) are used)
-volatile uint8_t currentPosition[8] = {
+volatile uint8_t currentPosition[NUM_DRIVES] = {
   0,0,0,0,0,0,0,0};
   
 #define RESOLUTION_US 40
 
 //Current period assigned to each pin.  0 = off.  Each period is of the length specified by the RESOLUTION
 //variable above.  i.e. A period of 10 is (RESOLUTION x 10) microseconds long.
-volatile unsigned int currentPeriod[8] = {
+volatile unsigned int currentPeriod[NUM_DRIVES] = {
   0,0,0,0,0,0,0,0,
 };
 
 //Current tick
-volatile unsigned int currentTick[8] = {
+volatile unsigned int currentTick[NUM_DRIVES] = {
   0,0,0,0,0,0,0,0,
 };
 
@@ -59,13 +58,13 @@ void main(void)
     //setup direction pins' port for output
     DIR_DDR = 0xFF;
     
-    STEP_PORT ^= 0xFF;
+    //STEP_PORT ^= 0xFF; //so set all step pins to 1 (HIGH)
     
-    DDRE |= (1<<1);
+    DEBUG_DDR |= (1<<DEBUG_TICK_BIT);//for debug
     
     //init the USART module and stuff
     //initUSART();
-    uart0_init(UART_BAUD_SELECT_DOUBLE_SPEED(9600,F_CPU) );
+    uart0_init( UART_BAUD_SELECT_DOUBLE_SPEED(9600,F_CPU) );
     
     //setup timer0 tick
     setup_timer0_tick(RESOLUTION_US);
@@ -77,9 +76,9 @@ void main(void)
         //The first loop, reset all the drives, and wait 2 seconds...
         if ( bit_is_set(flag_store,FIRST_RUN_BIT) )
         {
-        flag_store &= ~(1<<FIRST_RUN_BIT);
-        resetAll();
-        _delay_ms(2000);
+            flag_store &= ~(1<<FIRST_RUN_BIT);
+            resetAll();
+            _delay_ms(2000);
         }
         
         //Only read if we have 
@@ -116,27 +115,27 @@ inline void setup_timer0_tick(uint8_t us_delay){
 
 void resetAll(void){
     
-    uint8_t i=8;
+    uint8_t i=NUM_DRIVES;
     while(i--){
         currentPeriod[i]=0;
     }
     
     // New all-at-once reset
-  for (uint8_t s=0;s<80;s++){ // For max drive's position
+    for (uint8_t s=0;s<80;s++){ // For max drive's position
     //for (byte p=FIRST_PIN;p<=PIN_MAX;p+=2){
-      i=8;
+        i=NUM_DRIVES;
         while(i--){
-      //digitalWrite(p+1,HIGH); // Go in reverse
-        DIR_PORT |= (1<<i);
-        //digitalWrite(p,HIGH);
-        STEP_PORT |= (1<<i);
-        //digitalWrite(p,LOW);
-        _delay_us(2);
-        STEP_PORT &= ~(1<<i);
+            //digitalWrite(p+1,HIGH); // Go in reverse
+            DIR_PORT |= (1<<i);
+            //digitalWrite(p,HIGH);
+            STEP_PORT |= (1<<i);
+            //digitalWrite(p,LOW);
+            _delay_us(2);
+            STEP_PORT &= ~(1<<i);
         }
-    _delay_ms(5);
-  }
-    i=8;
+        _delay_ms(5);
+    }
+    i=NUM_DRIVES;
     while(i--){
         
         currentPosition[i] = 0;
@@ -176,12 +175,12 @@ void togglePin(uint8_t pin, uint8_t dir_pin){
 }
 
 static inline void tick(void){    
-    PORTE ^= (1<<1); //toggle for debug
+    DEBUG_PORT ^= (1<<DEBUG_TICK_BIT); //toggle for debug
     /* 
-   If there is a period set for control pin 2, count the number of
-   ticks that pass, and toggle the pin if the current period is reached.
-   */
-  /*
+    If there is a period set for control pin 2, count the number of
+    ticks that pass, and toggle the pin if the current period is reached.
+    */
+    /*
   if(currentPeriod[0]>0){
             currentTick[0]++;
             if(currentTick[0] >= currentPeriod[0]){
@@ -240,7 +239,7 @@ static inline void tick(void){
         }
     */
   
-    uint8_t p=8;
+    uint8_t p=NUM_DRIVES;
     while(p--){
         if(currentPeriod[p]>0){
             currentTick[p]++;
@@ -250,7 +249,6 @@ static inline void tick(void){
             }
         }
     }
-    
 }
 
 //isr for timer0 compare match

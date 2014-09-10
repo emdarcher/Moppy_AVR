@@ -14,3 +14,10 @@
 
 #define DIR_DDR DDRC
 #define DIR_PORT PORTC
+
+//stuff for old-school-ish debugging,
+//and for look at with logic analyzer
+#define DEBUG_DDR DDRE
+#define DEBUG_PORT PORTE
+#define DEBUG_TICK_BIT 1
+
