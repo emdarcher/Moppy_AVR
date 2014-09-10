@@ -58,7 +58,7 @@ void main(void)
     //setup direction pins' port for output
     DIR_DDR = 0xFF;
     
-    //STEP_PORT ^= 0xFF; //so set all step pins to 1 (HIGH)
+    STEP_PORT ^= 0xFF; //so set all step pins to 1 (HIGH)
     
     DEBUG_DDR |= (1<<DEBUG_TICK_BIT);//for debug
     
@@ -175,12 +175,12 @@ void togglePin(uint8_t pin, uint8_t dir_pin){
 }
 
 static inline void tick(void){    
-    DEBUG_PORT ^= (1<<DEBUG_TICK_BIT); //toggle for debug
+    //DEBUG_PORT ^= (1<<DEBUG_TICK_BIT); //toggle for debug
     /* 
     If there is a period set for control pin 2, count the number of
     ticks that pass, and toggle the pin if the current period is reached.
     */
-    /*
+    
   if(currentPeriod[0]>0){
             currentTick[0]++;
             if(currentTick[0] >= currentPeriod[0]){
@@ -237,8 +237,8 @@ static inline void tick(void){
                 currentTick[7]=0;
             }
         }
-    */
-  
+    
+/*  
     uint8_t p=NUM_DRIVES;
     while(p--){
         if(currentPeriod[p]>0){
@@ -249,6 +249,7 @@ static inline void tick(void){
             }
         }
     }
+*/
 }
 
 //isr for timer0 compare match
