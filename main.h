@@ -14,4 +14,3 @@
 
 #define DIR_DDR DDRC
 #define DIR_PORT PORTC
-
