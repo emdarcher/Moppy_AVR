@@ -3,7 +3,7 @@
 
 #include "main.h"
 //#include "USART.h"
-#include "usart.h"
+#include "uart.h"
 
 uint8_t flag_store = 0;
 #define FIRST_RUN_BIT 0 //bit of the first run flag
@@ -52,7 +52,7 @@ void main(void)
     //setup direction pins' port for output
     DIR_DDR = 0xFF;
     
-    
+    DDRE |= (1<<1);
     
     //init the USART module and stuff
     //initUSART();
@@ -81,11 +81,12 @@ void main(void)
                 resetAll();
                 //Flush any remaining messages.
                 while(uart0_available() > 0){
-                    uart0_flush();
+                    //uart0_flush();
+                    uart0_getc();
                 }
             }    
             else{
-                currentPeriod[(((uart0_getc())>>1)-1)] = (uart0_getc() << 8) | uart0_getc();
+                currentPeriod[((((uint8_t)uart0_getc())>>1)-1)] = ((uint8_t)uart0_getc() << 8) | (uint8_t)uart0_getc();
             }
         }
     }
@@ -163,7 +164,7 @@ void togglePin(uint8_t pin, uint8_t dir_pin){
 
 inline void tick(void){
     
-    
+    PORTE ^= (1<<1);
     /* 
    If there is a period set for control pin 2, count the number of
    ticks that pass, and toggle the pin if the current period is reached.

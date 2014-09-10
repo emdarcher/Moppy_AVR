@@ -23,7 +23,7 @@ MAIN = main.c
 # EXTRA_SOURCE_FILES = USART.c
 EXTRA_SOURCE_DIR = ./libs/
 #EXTRA_SOURCE_FILES = USART.c
-EXTRA_SOURCE_FILES = uart.c
+EXTRA_SOURCE_FILES = uart.c uart.h
 
 ##########------------------------------------------------------##########
 ##########                 Programmer Defaults                  ##########
