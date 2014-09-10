@@ -3,6 +3,13 @@
 
 #include "main.h"
 //#include "USART.h"
+
+
+//set these things int the Makefile
+//#define UART_RX0_BUFFER_SIZE 4
+//#define UART_TX0_BUFFER_SIZE 4
+
+
 #include "uart.h"
 
 uint8_t flag_store = 0;
@@ -17,25 +24,25 @@ const uint8_t MAX_POSITION[8] = {
   158,158,158,158,158,158,158,158};
   
 //Array to track the current position of each floppy head.  (Only even indexes (i.e. 2,4,6...) are used)
-uint8_t currentPosition[8] = {
+volatile uint8_t currentPosition[8] = {
   0,0,0,0,0,0,0,0};
   
 #define RESOLUTION_US 40
 
 //Current period assigned to each pin.  0 = off.  Each period is of the length specified by the RESOLUTION
 //variable above.  i.e. A period of 10 is (RESOLUTION x 10) microseconds long.
-unsigned int currentPeriod[8] = {
+volatile unsigned int currentPeriod[8] = {
   0,0,0,0,0,0,0,0,
 };
 
 //Current tick
-unsigned int currentTick[8] = {
+volatile unsigned int currentTick[8] = {
   0,0,0,0,0,0,0,0,
 };
 
 
 //prototypes
-inline void tick(void);
+static inline void tick(void);
 inline void setup_timer0_tick(uint8_t us_delay);
 void reset(void);
 void resetAll(void);
@@ -52,12 +59,13 @@ void main(void)
     //setup direction pins' port for output
     DIR_DDR = 0xFF;
     
+    STEP_PORT ^= 0xFF;
+    
     DDRE |= (1<<1);
     
     //init the USART module and stuff
     //initUSART();
-    uart0_init(UART_BAUD_SELECT(9600,F_CPU) );
-    
+    uart0_init(UART_BAUD_SELECT_DOUBLE_SPEED(9600,F_CPU) );
     
     //setup timer0 tick
     setup_timer0_tick(RESOLUTION_US);
@@ -77,7 +85,7 @@ void main(void)
         //Only read if we have 
         if (uart0_available() > 2){
             //Watch for special 100-message to reset the drives
-            if (uart0_peek() == 100) {
+            if ((uint8_t)uart0_peek() == 100) {
                 resetAll();
                 //Flush any remaining messages.
                 while(uart0_available() > 0){
@@ -86,7 +94,12 @@ void main(void)
                 }
             }    
             else{
-                currentPeriod[((((uint8_t)uart0_getc())>>1)-1)] = ((uint8_t)uart0_getc() << 8) | (uint8_t)uart0_getc();
+            uint8_t ch0,ch1,ch2;
+            ch0=uart0_getc();
+            ch1=uart0_getc();
+            ch2=uart0_getc();
+                currentPeriod[(((ch0)>>1)-1)] = ((ch1 << 8) | ch2);
+                uart0_flush();
             }
         }
     }
@@ -103,7 +116,7 @@ inline void setup_timer0_tick(uint8_t us_delay){
 
 void resetAll(void){
     
-    uint8_t i=7;
+    uint8_t i=8;
     while(i--){
         currentPeriod[i]=0;
     }
@@ -111,23 +124,23 @@ void resetAll(void){
     // New all-at-once reset
   for (uint8_t s=0;s<80;s++){ // For max drive's position
     //for (byte p=FIRST_PIN;p<=PIN_MAX;p+=2){
-      i=7;
+      i=8;
         while(i--){
       //digitalWrite(p+1,HIGH); // Go in reverse
         DIR_PORT |= (1<<i);
         //digitalWrite(p,HIGH);
         STEP_PORT |= (1<<i);
         //digitalWrite(p,LOW);
+        _delay_us(2);
         STEP_PORT &= ~(1<<i);
         }
     _delay_ms(5);
   }
-    i=7;
+    i=8;
     while(i--){
         
         currentPosition[i] = 0;
         DIR_PORT &= ~(1<<i);
-        
         
     }
     
@@ -162,72 +175,72 @@ void togglePin(uint8_t pin, uint8_t dir_pin){
     
 }
 
-inline void tick(void){
-    
-    PORTE ^= (1<<1);
+static inline void tick(void){    
+    PORTE ^= (1<<1); //toggle for debug
     /* 
    If there is a period set for control pin 2, count the number of
    ticks that pass, and toggle the pin if the current period is reached.
    */
-   /*
-  if (currentPeriod[2]>0){
-    currentTick[2]++;
-    if (currentTick[2] >= currentPeriod[2]){
-      togglePin(2,3);
-      currentTick[2]=0;
+  /*
+  if(currentPeriod[0]>0){
+            currentTick[0]++;
+            if(currentTick[0] >= currentPeriod[0]){
+                togglePin(0,0);
+                currentTick[0]=0;
+            }
+        }
+  if(currentPeriod[1]>0){
+            currentTick[1]++;
+            if(currentTick[1] >= currentPeriod[1]){
+                togglePin(1,1);
+                currentTick[1]=0;
+            }
+        }
+    if(currentPeriod[2]>0){
+            currentTick[2]++;
+            if(currentTick[2] >= currentPeriod[2]){
+                togglePin(2,2);
+                currentTick[2]=0;
+            }
     }
-  }
-  if (currentPeriod[4]>0){
-    currentTick[4]++;
-    if (currentTick[4] >= currentPeriod[4]){
-      togglePin(4,5);
-      currentTick[4]=0;
+    if(currentPeriod[3]>0){
+            currentTick[3]++;
+            if(currentTick[3] >= currentPeriod[3]){
+                togglePin(3,3);
+                currentTick[3]=0;
+            }
     }
-  }
-  if (currentPeriod[6]>0){
-    currentTick[6]++;
-    if (currentTick[6] >= currentPeriod[6]){
-      togglePin(6,7);
-      currentTick[6]=0;
+    if(currentPeriod[4]>0){
+            currentTick[4]++;
+            if(currentTick[4] >= currentPeriod[4]){
+                togglePin(4,4);
+                currentTick[4]=0;
+            }
     }
-  }
-  if (currentPeriod[8]>0){
-    currentTick[8]++;
-    if (currentTick[8] >= currentPeriod[8]){
-      togglePin(8,9);
-      currentTick[8]=0;
-    }
-  }
-  if (currentPeriod[10]>0){
-    currentTick[10]++;
-    if (currentTick[10] >= currentPeriod[10]){
-      togglePin(10,11);
-      currentTick[10]=0;
-    }
-  }
-  if (currentPeriod[12]>0){
-    currentTick[12]++;
-    if (currentTick[12] >= currentPeriod[12]){
-      togglePin(12,13);
-      currentTick[12]=0;
-    }
-  }
-  if (currentPeriod[14]>0){
-    currentTick[14]++;
-    if (currentTick[14] >= currentPeriod[14]){
-      togglePin(14,15);
-      currentTick[14]=0;
-    }
-  }
-  if (currentPeriod[16]>0){
-    currentTick[16]++;
-    if (currentTick[16] >= currentPeriod[16]){
-      togglePin(16,17);
-      currentTick[16]=0;
-    }
-  }*/
+    if(currentPeriod[5]>0){
+            currentTick[5]++;
+            if(currentTick[5] >= currentPeriod[5]){
+                togglePin(5,5);
+                currentTick[5]=0;
+            }
+        }
+    if(currentPeriod[6]>0){
+            currentTick[6]++;
+            if(currentTick[6] >= currentPeriod[6]){
+                togglePin(6,6);
+                currentTick[6]=0;
+            }
+        }
+    if(currentPeriod[7]>0){
+            currentTick[7]++;
+            if(currentTick[7] >= currentPeriod[7]){
+                togglePin(7,7);
+                currentTick[7]=0;
+            }
+        }
+    */
   
-    uint8_t p=7;
+    uint8_t p=8;
     while(p--){
         if(currentPeriod[p]>0){
             currentTick[p]++;
