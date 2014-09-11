@@ -150,29 +150,29 @@ void resetAll(void){
 void togglePin(uint8_t pin, uint8_t dir_pin){
     
     //Switch directions if end has been reached
-  if (currentPosition[pin] >= MAX_POSITION[pin]) {
-    //currentState[direction_pin] = HIGH;
-    //digitalWrite(direction_pin,HIGH);
-    DIR_PORT |= (1<<dir_pin);
-  } 
-  else if (currentPosition[pin] <= 0) {
-    //currentState[direction_pin] = LOW;
-    //digitalWrite(direction_pin,LOW);
-    DIR_PORT &= ~(1<<dir_pin);
-  }
+    if (currentPosition[pin] >= MAX_POSITION[pin]) {
+        //currentState[direction_pin] = HIGH;
+        //digitalWrite(direction_pin,HIGH);
+        DIR_PORT |= (1<<dir_pin);
+    } 
+    else if (currentPosition[pin] <= 0) {
+        //currentState[direction_pin] = LOW;
+        //digitalWrite(direction_pin,LOW);
+        DIR_PORT &= ~(1<<dir_pin);
+    }
 
-  //Update currentPosition
-  if (bit_is_set(DIR_PORT,dir_pin)){
-    currentPosition[pin]--;
-  } 
-  else {
-    currentPosition[pin]++;
-  }
+    //Update currentPosition
+    if (bit_is_set(DIR_PORT,dir_pin)){
+        currentPosition[pin]--;
+    } 
+    else {
+        currentPosition[pin]++;
+    }
 
-  //Pulse the control pin
-  //digitalWrite(pin,currentState[pin]);
-  //currentState[pin] = ~currentState[pin];
-  STEP_PORT ^= (1<<pin);
+    //Pulse the control pin
+    //digitalWrite(pin,currentState[pin]);
+    //currentState[pin] = ~currentState[pin];
+    STEP_PORT ^= (1<<pin);
     
 }
 
