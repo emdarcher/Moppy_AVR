@@ -58,7 +58,7 @@ void main(void)
     //setup direction pins' port for output
     DIR_DDR = 0xFF;
     
-    STEP_PORT ^= 0xFF; //so set all step pins to 1 (HIGH)
+    STEP_PORT |= 0xFF; //so set all step pins to 1 (HIGH)
     
     DEBUG_DDR |= (1<<DEBUG_TICK_BIT);//for debug
     
@@ -181,62 +181,62 @@ static inline void tick(void){
     ticks that pass, and toggle the pin if the current period is reached.
     */
     
-  if(currentPeriod[0]>0){
-            currentTick[0]++;
-            if(currentTick[0] >= currentPeriod[0]){
-                togglePin(0,0);
-                currentTick[0]=0;
-            }
+    if(currentPeriod[0]>0){
+        currentTick[0]++;
+        if(currentTick[0] >= currentPeriod[0]){
+            togglePin(0,0);
+            currentTick[0]=0;
         }
-  if(currentPeriod[1]>0){
-            currentTick[1]++;
-            if(currentTick[1] >= currentPeriod[1]){
-                togglePin(1,1);
-                currentTick[1]=0;
-            }
+    }
+    if(currentPeriod[1]>0){
+        currentTick[1]++;
+        if(currentTick[1] >= currentPeriod[1]){
+            togglePin(1,1);
+            currentTick[1]=0;
         }
+    }
     if(currentPeriod[2]>0){
-            currentTick[2]++;
-            if(currentTick[2] >= currentPeriod[2]){
-                togglePin(2,2);
-                currentTick[2]=0;
-            }
+        currentTick[2]++;
+        if(currentTick[2] >= currentPeriod[2]){
+            togglePin(2,2);
+            currentTick[2]=0;
+        }
     }
     if(currentPeriod[3]>0){
-            currentTick[3]++;
-            if(currentTick[3] >= currentPeriod[3]){
-                togglePin(3,3);
-                currentTick[3]=0;
-            }
+        currentTick[3]++;
+        if(currentTick[3] >= currentPeriod[3]){
+            togglePin(3,3);
+            currentTick[3]=0;
+        }
     }
     if(currentPeriod[4]>0){
-            currentTick[4]++;
-            if(currentTick[4] >= currentPeriod[4]){
-                togglePin(4,4);
-                currentTick[4]=0;
-            }
+        currentTick[4]++;
+        if(currentTick[4] >= currentPeriod[4]){
+            togglePin(4,4);
+            currentTick[4]=0;
+        }
     }
     if(currentPeriod[5]>0){
-            currentTick[5]++;
-            if(currentTick[5] >= currentPeriod[5]){
-                togglePin(5,5);
-                currentTick[5]=0;
-            }
+        currentTick[5]++;
+        if(currentTick[5] >= currentPeriod[5]){
+            togglePin(5,5);
+            currentTick[5]=0;
         }
+    }
     if(currentPeriod[6]>0){
-            currentTick[6]++;
-            if(currentTick[6] >= currentPeriod[6]){
-                togglePin(6,6);
-                currentTick[6]=0;
-            }
+        currentTick[6]++;
+        if(currentTick[6] >= currentPeriod[6]){
+            togglePin(6,6);
+            currentTick[6]=0;
         }
+    }
     if(currentPeriod[7]>0){
-            currentTick[7]++;
-            if(currentTick[7] >= currentPeriod[7]){
-                togglePin(7,7);
-                currentTick[7]=0;
-            }
+        currentTick[7]++;
+        if(currentTick[7] >= currentPeriod[7]){
+            togglePin(7,7);
+            currentTick[7]=0;
         }
+    }
     
 /*  
     uint8_t p=NUM_DRIVES;
