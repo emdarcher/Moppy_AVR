@@ -1,7 +1,7 @@
 //code in AVR C for interfacing with the Moppy client from an AVR mcu
 //to make music on floppy drives
 
-#include "main.h"
+#include "main.h" //main.h header file, change STEP, DIR, & DEBUG ports in there
 
 //set these things in the Makefile if you need a bigger ring buffer size
 //#define UART_RX0_BUFFER_SIZE 4
@@ -93,10 +93,11 @@ void main(void)
                 }
             }    
             else{
-            uint8_t ch0,ch1,ch2;
-            ch0=uart0_getc();
-            ch1=uart0_getc();
-            ch2=uart0_getc();
+                /* get the 3 chars (bytes) from the serial RX buffer */
+                uint8_t ch0,ch1,ch2;
+                ch0=uart0_getc();
+                ch1=uart0_getc();
+                ch2=uart0_getc();
                 currentPeriod[(((ch0)>>1)-1)] = ((ch1 << 8) | ch2);
                 uart0_flush();
             }
@@ -106,6 +107,7 @@ void main(void)
 
 inline void setup_timer0_tick(uint8_t us_delay){
     //configured for a 8MHz system clock divided by 8 for microsecond resolution
+    //max delay in microseconds is 255 because it is an 8-bit timer.
     
     TCCR0 |= ((1<<WGM01)|(1<<CS01)); //set to CTC mode, clk/8 divider.
     OCR0 = us_delay; //sets the delay in microseconds for tick
@@ -177,7 +179,7 @@ void togglePin(uint8_t pin, uint8_t dir_pin){
 static inline void tick(void){    
     //DEBUG_PORT ^= (1<<DEBUG_TICK_BIT); //toggle for debug
     /* 
-    If there is a period set for control pin 2, count the number of
+    If there is a period set for control pin 0, count the number of
     ticks that pass, and toggle the pin if the current period is reached.
     */
     

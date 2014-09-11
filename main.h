@@ -1,3 +1,7 @@
+/*
+ * main.h header file with various avr includes & defines for the main code
+ */
+
 // Standard AVR includes
 #include <avr/io.h>
 #include <util/delay.h>
@@ -8,15 +12,18 @@
 #include <avr/wdt.h>
 #include <avr/power.h>
 
+//defines
 
+//STEP pins' ddr and port registers
 #define STEP_DDR DDRA
 #define STEP_PORT PORTA
 
+//DIR pins's ddr and port registers
 #define DIR_DDR DDRC
 #define DIR_PORT PORTC
 
 //stuff for old-school-ish debugging,
-//and for look at with logic analyzer
+//and for looking at with a logic analyzer
 #define DEBUG_DDR DDRE
 #define DEBUG_PORT PORTE
 #define DEBUG_TICK_BIT 1
