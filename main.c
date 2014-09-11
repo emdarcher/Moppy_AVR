@@ -20,11 +20,13 @@ uint8_t flag_store = 0;
  half a position (use 158 and 98).
  */
 const uint8_t MAX_POSITION[NUM_DRIVES] = {
-  158,158,158,158,158,158,158,158};
+  158,158,158,158,158,158,158,158,
+};
   
 //Array to track the current position of each floppy head.  (Only even indexes (i.e. 2,4,6...) are used)
 volatile uint8_t currentPosition[NUM_DRIVES] = {
-  0,0,0,0,0,0,0,0};
+  0,0,0,0,0,0,0,0,
+};
   
 #define RESOLUTION_US 40
 
@@ -182,7 +184,7 @@ static inline void tick(void){
     If there is a period set for control pin 0, count the number of
     ticks that pass, and toggle the pin if the current period is reached.
     */
-    
+    /*
     if(currentPeriod[0]>0){
         currentTick[0]++;
         if(currentTick[0] >= currentPeriod[0]){
@@ -239,8 +241,8 @@ static inline void tick(void){
             currentTick[7]=0;
         }
     }
-    
-/*  
+    */
+
     uint8_t p=NUM_DRIVES;
     while(p--){
         if(currentPeriod[p]>0){
@@ -251,7 +253,7 @@ static inline void tick(void){
             }
         }
     }
-*/
+
 }
 
 //isr for timer0 compare match
