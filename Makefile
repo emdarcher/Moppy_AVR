@@ -186,11 +186,17 @@ show_fuses:
 set_default_fuses:  FUSE_STRING = -U lfuse:w:$(LFUSE):m -U hfuse:w:$(HFUSE):m -U efuse:w:$(EFUSE):m 
 set_default_fuses:  fuses
 
+
+
 ## Set the fuse byte for full-speed mode 8MHz
 ## Note: can also be set in firmware for modern chips
 set_fast_fuse: LFUSE = 0xE4
 set_fast_fuse: FUSE_STRING = -U lfuse:w:$(LFUSE):m 
 set_fast_fuse: fuses
+
+set_ext_osc_fast: LFUSE = 0xFF
+set_ext_osc_fast: FUSE_STRING = -U lfuse:w:$(LFUSE):m
+set_ext_osc_fast: fuses
 
 ## Set the EESAVE fuse byte to preserve EEPROM across flashes
 set_eeprom_save_fuse: HFUSE = 0xD1

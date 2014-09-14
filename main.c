@@ -1,6 +1,7 @@
 //code in AVR C for interfacing with the Moppy client from an AVR mcu
 //to make music on floppy drives
 
+
 #include "main.h" //main.h header file, change STEP, DIR, & DEBUG ports in there
 
 //set these things in the Makefile if you need a bigger ring buffer size
@@ -66,7 +67,8 @@ void main(void)
     
     //init the USART module and stuff
     //initUSART();
-    uart0_init( UART_BAUD_SELECT_DOUBLE_SPEED(9600,F_CPU) );
+    uart0_init( UART_BAUD_SELECT(9600,F_CPU) );
+    //uart0_init( UART_BAUD_SELECT_DOUBLE_SPEED(9600,F_CPU) );
     
     //setup timer0 tick
     setup_timer0_tick(RESOLUTION_US);
@@ -101,7 +103,7 @@ void main(void)
                 ch1=uart0_getc();
                 ch2=uart0_getc();
                 currentPeriod[(((ch0)>>1)-1)] = ((ch1 << 8) | ch2);
-                uart0_flush();
+                //uart0_flush();
             }
         }
     }
@@ -178,13 +180,13 @@ void togglePin(uint8_t pin, uint8_t dir_pin){
     
 }
 
-static inline void tick(void){    
+static inline void tick(void){     
     //DEBUG_PORT ^= (1<<DEBUG_TICK_BIT); //toggle for debug
     /* 
     If there is a period set for control pin 0, count the number of
     ticks that pass, and toggle the pin if the current period is reached.
     */
-    /*
+    
     if(currentPeriod[0]>0){
         currentTick[0]++;
         if(currentTick[0] >= currentPeriod[0]){
@@ -241,8 +243,8 @@ static inline void tick(void){
             currentTick[7]=0;
         }
     }
-    */
-
+    
+    /*
     uint8_t p=NUM_DRIVES;
     while(p--){
         if(currentPeriod[p]>0){
@@ -252,7 +254,7 @@ static inline void tick(void){
                 currentTick[p]=0;
             }
         }
-    }
+    }*/
 
 }
 
