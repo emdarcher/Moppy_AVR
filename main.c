@@ -186,7 +186,7 @@ static inline void tick(void){
     If there is a period set for control pin 0, count the number of
     ticks that pass, and toggle the pin if the current period is reached.
     */
-    
+    #if NUM_DRIVES>0
     if(currentPeriod[0]>0){
         currentTick[0]++;
         if(currentTick[0] >= currentPeriod[0]){
@@ -194,6 +194,7 @@ static inline void tick(void){
             currentTick[0]=0;
         }
     }
+    #if NUM_DRIVES>1
     if(currentPeriod[1]>0){
         currentTick[1]++;
         if(currentTick[1] >= currentPeriod[1]){
@@ -201,6 +202,7 @@ static inline void tick(void){
             currentTick[1]=0;
         }
     }
+    #if NUM_DRIVES>2
     if(currentPeriod[2]>0){
         currentTick[2]++;
         if(currentTick[2] >= currentPeriod[2]){
@@ -208,6 +210,7 @@ static inline void tick(void){
             currentTick[2]=0;
         }
     }
+    #if NUM_DRIVES>3
     if(currentPeriod[3]>0){
         currentTick[3]++;
         if(currentTick[3] >= currentPeriod[3]){
@@ -215,6 +218,7 @@ static inline void tick(void){
             currentTick[3]=0;
         }
     }
+    #if NUM_DRIVES>4
     if(currentPeriod[4]>0){
         currentTick[4]++;
         if(currentTick[4] >= currentPeriod[4]){
@@ -222,6 +226,7 @@ static inline void tick(void){
             currentTick[4]=0;
         }
     }
+    #if NUM_DRIVES>5
     if(currentPeriod[5]>0){
         currentTick[5]++;
         if(currentTick[5] >= currentPeriod[5]){
@@ -229,6 +234,7 @@ static inline void tick(void){
             currentTick[5]=0;
         }
     }
+    #if NUM_DRIVES>6
     if(currentPeriod[6]>0){
         currentTick[6]++;
         if(currentTick[6] >= currentPeriod[6]){
@@ -236,6 +242,7 @@ static inline void tick(void){
             currentTick[6]=0;
         }
     }
+    #if NUM_DRIVES>7
     if(currentPeriod[7]>0){
         currentTick[7]++;
         if(currentTick[7] >= currentPeriod[7]){
@@ -243,6 +250,21 @@ static inline void tick(void){
             currentTick[7]=0;
         }
     }
+        #if NUM_DRIVES>8
+            #error "Too many Drives in NUM_DRIVES, you can't do more than 8 drives using current code."
+        #endif
+    #endif
+    #endif
+    #endif
+    #endif
+    #endif
+    #endif
+    #endif
+    
+    #else //if NUM_DRIVES is 0 or undefined
+        #error "You must define more than 0 drives in NUM_DRIVES "
+    
+    #endif
     
     /*
     uint8_t p=NUM_DRIVES;
