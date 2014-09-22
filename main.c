@@ -13,7 +13,7 @@
 uint8_t flag_store = 0;
 #define FIRST_RUN_BIT 0 //bit of the first run flag
 
-#define NUM_DRIVES 8
+#define NUM_DRIVES 8 //put the number of drives you want to use here
 
 /*An array of maximum track positions for each step-control pin.  Even pins
  are used for control, so only even numbers need a value here.  3.5" Floppies have
