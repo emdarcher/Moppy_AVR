@@ -57,12 +57,17 @@ void main(void)
     flag_store |= (1<<FIRST_RUN_BIT); //set the first run bit
     
     //setup step pins' port for output
-    STEP_DDR = 0xFF;
+    //STEP_DDR = 0xFF;
     //setup direction pins' port for output
-    DIR_DDR = 0xFF;
-    
-    STEP_PORT |= 0xFF; //so set all step pins to 1 (HIGH)
-    
+    //DIR_DDR = 0xFF;
+    //STEP_PORT |= 0xFF; //so set all step pins to 1 (HIGH) 
+    uint8_t nd = NUM_DRIVES;
+    while(nd--){
+        STEP_DDR    |=  (1<<nd);
+        DIR_DDR     |=  (1<<nd);
+        STEP_PORT   |=  (1<<nd);
+    }   
+
     DEBUG_DDR |= (1<<DEBUG_TICK_BIT);//for debug
     
     //init the USART module and stuff
