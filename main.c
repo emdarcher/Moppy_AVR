@@ -67,9 +67,9 @@ void main(void)
         DIR_DDR     |=  (1<<nd);
         STEP_PORT   |=  (1<<nd);
     }   
-
+    #if defined(__AVR_ATmega8515__)
     DEBUG_DDR |= (1<<DEBUG_TICK_BIT);//for debug
-    
+    #endif
     //init the USART module and stuff
     //initUSART();
     uart0_init( UART_BAUD_SELECT(9600,F_CPU) );

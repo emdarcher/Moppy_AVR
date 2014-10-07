@@ -24,7 +24,9 @@
 
 //stuff for old-school-ish debugging,
 //and for looking at with a logic analyzer
+#if defined(__AVR_ATmega8515__)
 #define DEBUG_DDR DDRE
 #define DEBUG_PORT PORTE
 #define DEBUG_TICK_BIT 1
+#endif
 
