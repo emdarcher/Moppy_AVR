@@ -6,7 +6,7 @@
 
 MCU   = atmega8515 
 F_CPU = 8000000
-BAUD = 9600
+#BAUD = 9600
 ## Also try BAUD = 19200 or 38400 if you're feeling lucky.
 
 ## This is where your main() routine lives 
@@ -55,8 +55,9 @@ AVRSIZE = avr-size
 AVRDUDE = avrdude
 
 ## Compilation options, type man avr-gcc if you're curious.
-CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU)UL -DBAUD=$(BAUD) $(UART_LIB_FLAGS) -Os -I. -I$(EXTRA_SOURCE_DIR)
-#CFLAGS += $(UART_LIB_FLAGS)
+CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU)UL -DBAUD=$(BAUD) 
+CFLAGS +=  $(UART_LIB_FLAGS)
+CFLAGS += -Os -I. -I$(EXTRA_SOURCE_DIR)
 CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums 
 CFLAGS += -Wall -Wstrict-prototypes
 CFLAGS += -g -ggdb
