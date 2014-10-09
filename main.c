@@ -24,7 +24,7 @@ const uint8_t MAX_POSITION[NUM_DRIVES] = {
   158,158,158,158,158,158,158,158,
 };
   
-//Array to track the current position of each floppy head.  (Only even indexes (i.e. 2,4,6...) are used)
+//Array to track the current position of each floppy head.
 volatile uint8_t currentPosition[NUM_DRIVES] = {
   0,0,0,0,0,0,0,0,
 };
