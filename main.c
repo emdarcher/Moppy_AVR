@@ -83,8 +83,7 @@ void main(void)
     while(1){
         
         //The first loop, reset all the drives, and wait 2 seconds...
-        if ( bit_is_set(flag_store,FIRST_RUN_BIT) )
-        {
+        if ( bit_is_set(flag_store,FIRST_RUN_BIT) ){
             flag_store &= ~(1<<FIRST_RUN_BIT);
             resetAll();
             _delay_ms(2000);
